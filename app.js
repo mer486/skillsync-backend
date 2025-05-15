@@ -34,6 +34,7 @@ app.use('/api/assessment', assessmentRoutes);
 app.use('/api/career', careerRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/mentor', mentorRoutes);
+app.use('/api/chats', require('./routes/chatRoutes'));
 
 
 // Connect to MongoDB

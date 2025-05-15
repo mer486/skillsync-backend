@@ -1,45 +1,69 @@
+// controllers/resumeController.js
 const fs = require('fs');
+const path = require('path');
 const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
-const path = require('path');
-const ResumeAnalyzerFactory = require('../factories/ResumeAnalyzerFactory');
+const User = require('../models/User');
+const { analyzeResumeText } = require('../services/huggingfaceService');
 const NotificationService = require('../observers/NotificationService');
 const EmailNotifier = require('../observers/EmailNotifier');
 
+const extractKeywords = (entities) => {
+  const skills = [];
+  const organizations = [];
+  const jobTitles = [];
+
+  for (const item of entities) {
+    if (item.entity_group === 'SKILL') {
+      skills.push(item.word);
+    } else if (item.entity_group === 'ORG') {
+      organizations.push(item.word);
+    } else if (item.entity_group === 'JOB' || item.entity_group === 'TITLE') {
+      jobTitles.push(item.word);
+    }
+  }
+
+  return { skills, organizations, jobTitles };
+};
+
 exports.uploadAndAnalyze = async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
-    }
+    const file = req.file;
+    if (!file) return res.status(400).json({ message: 'No file uploaded' });
 
-    const filePath = req.file.path;
-    const ext = path.extname(req.file.originalname).toLowerCase();
-
+    // Extract text from resume
     let text = '';
-
-    if (ext === '.pdf') {
-      const dataBuffer = fs.readFileSync(filePath);
-      const data = await pdfParse(dataBuffer);
-      text = data.text;
-    } else if (ext === '.docx') {
-      const data = await mammoth.extractRawText({ path: filePath });
-      text = data.value;
+    if (file.mimetype === 'application/pdf') {
+      const dataBuffer = fs.readFileSync(file.path);
+      const parsed = await pdfParse(dataBuffer);
+      text = parsed.text;
+    } else if (
+      file.mimetype ===
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ) {
+      const result = await mammoth.extractRawText({ path: file.path });
+      text = result.value;
     } else {
-      return res.status(400).json({ message: 'Unsupported file type' });
+      return res.status(400).json({ message: 'Unsupported file format' });
     }
 
-    // ✅ Use factory to pick analyzer
-    const analyzer = ResumeAnalyzerFactory.getAnalyzer(req.user.subscription);
-    const result = analyzer.analyze(text);
+    // Analyze resume using Hugging Face
+    const aiResult = await analyzeResumeText(text);
+    const { skills, organizations, jobTitles } = extractKeywords(aiResult);
 
-    // ✅ Observer pattern: notify via email (fake/console for now)
+    // Save skills to user profile
+    await User.findByIdAndUpdate(req.user.id, { resumeKeywords: skills });
+
+    // Observer Pattern - Notify (mock)
     const notifier = new NotificationService();
     notifier.attach(new EmailNotifier());
-    notifier.notify(`Resume uploaded by ${req.user.email} analyzed.`);
+    notifier.notify(`Resume uploaded by ${req.user.email} was analyzed and skills saved.`);
 
-    res.status(200).json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Something went wrong', error: err.message });
+    res.json({
+      message: 'Resume analyzed successfully',
+      extracted: { skills, organizations, jobTitles },
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Resume analysis failed', error: error.message });
   }
 };
