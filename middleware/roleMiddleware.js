@@ -1,24 +1,21 @@
 // middleware/roleMiddleware.js
 
-// Middleware to allow specific roles
+const restrictToRole = (role) => {
+  return (req, res, next) => {
+    if (!req.user || req.user.role !== role) {
+      return res.status(403).json({ message: 'Access denied: insufficient role' });
+    }
+    next();
+  };
+};
+
 const allowRoles = (...roles) => {
   return (req, res, next) => {
     if (!req.user || !roles.includes(req.user.role)) {
-      return res.status(403).json({ message: 'Forbidden' });
+      return res.status(403).json({ message: 'Access denied: unauthorized role' });
     }
     next();
   };
 };
 
-// Middleware to restrict to a single role
-const restrictToRole = (role) => {
-  return (req, res, next) => {
-    if (req.user.role !== role) {
-      return res.status(403).json({ message: 'Access denied' });
-    }
-    next();
-  };
-};
-
-// Export both functions together
-module.exports = { allowRoles, restrictToRole };
+module.exports = { restrictToRole , allowRoles }; // ✅ correct named exports

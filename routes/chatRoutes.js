@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const chatController = require('../controllers/chatController');
-const { auth } = require('../middleware/authMiddleware');
 const { allowRoles } = require('../middleware/roleMiddleware');
+const { auth } = require('../middleware/authMiddleware');
 
 // Students request chat
 router.post('/request', auth, chatController.requestChat);

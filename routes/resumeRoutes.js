@@ -1,9 +1,11 @@
+// routes/resumeRoutes.js
+
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { auth } = require('../middleware/authMiddleware');
 const { restrictToRole } = require('../middleware/roleMiddleware');
 const resumeController = require('../controllers/resumeController');
+const { auth } = require('../middleware/authMiddleware');
 
 // Set up multer for file uploads
 const upload = multer({ dest: 'uploads/' });

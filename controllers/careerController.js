@@ -130,4 +130,36 @@ exports.getProgress = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch progress', error: error.message });
   }
+
+  exports.updateRoadmap = async (req, res) => {
+  const { career, updatedSteps } = req.body;
+
+  if (!career || !Array.isArray(updatedSteps)) {
+    return res.status(400).json({ message: 'Invalid data' });
+  }
+
+  // Simulate a dynamic roadmap update (store in memory for now)
+  const roadmapStore = require('../data/roadmaps');
+  roadmapStore[career] = updatedSteps;
+
+  res.json({ message: `Roadmap for ${career} updated`, roadmap: updatedSteps });
+};
+const roadmaps = require('../data/roadmaps');
+
+exports.updateRoadmap = async (req, res) => {
+  const { career, newSteps } = req.body;
+
+  if (!career || !Array.isArray(newSteps)) {
+    return res.status(400).json({ message: 'Invalid request format' });
+  }
+
+  if (!roadmaps[career]) {
+    return res.status(404).json({ message: 'Career not found in roadmaps' });
+  }
+
+  roadmaps[career] = newSteps;
+  res.json({ message: 'Roadmap updated', updatedRoadmap: newSteps });
+};
+
+
 };
