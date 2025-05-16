@@ -39,6 +39,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 
 
 
+
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -48,6 +49,7 @@ mongoose.connect(process.env.MONGO_URI, {
   console.error('❌ MongoDB connection error:', err.message);
   process.exit(1); // Exit if connection fails
 });
+
 
 
 // Export app
