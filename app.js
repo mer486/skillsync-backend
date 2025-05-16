@@ -35,17 +35,20 @@ app.use('/api/career', careerRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/mentor', mentorRoutes);
 app.use('/api/chats', require('./routes/chatRoutes'));
+app.use('/api/auth', require('./routes/authRoutes'));
 
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
 
-// Root route to test if server is working
-app.get('/', (req, res) => {
-  res.send('SkillSync Backend API is working');
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('✅ Connected to MongoDB Atlas'))
+.catch(err => {
+  console.error('❌ MongoDB connection error:', err.message);
+  process.exit(1); // Exit if connection fails
 });
+
 
 // Export app
 module.exports = app;
