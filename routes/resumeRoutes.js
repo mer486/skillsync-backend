@@ -4,10 +4,13 @@ const multer = require('multer');
 const { auth } = require('../middleware/authMiddleware');
 const resumeController = require('../controllers/resumeController');
 
-// Set up multer for file uploads
-const upload = multer({ dest: 'uploads/' });
+// Set up multer for file uploads (PDF/DOCX only)
+const upload = multer({
+  dest: 'uploads/',
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
+});
 
-// ✅ Upload resume and analyze
+// ✅ Upload resume and analyze it using Hugging Face
 router.post(
   '/upload',
   auth,
@@ -15,7 +18,7 @@ router.post(
   resumeController.uploadAndAnalyze
 );
 
-// ✅ New: Get last analyzed resume data
+// ✅ Retrieve last analyzed resume details (used by Flutter frontend)
 router.get(
   '/analysis',
   auth,
