@@ -1,3 +1,4 @@
+// services/huggingfaceService.js
 const axios = require('axios');
 
 exports.analyzeResumeText = async (text) => {
@@ -7,20 +8,26 @@ exports.analyzeResumeText = async (text) => {
     {
       headers: {
         Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+        'Content-Type': 'application/json'
       },
     }
   );
 
-  const entities = response.data;
+  const entities = Array.isArray(response.data) ? response.data : [];
+
   return {
-    skills: entities.filter(e => e.entity_group === 'SKILL').map(e => e.word),
-    suggestions: generateSuggestions(text), // your logic or rules
+    entities,
+    suggestions: generateSuggestions(text),
   };
 };
 
 function generateSuggestions(text) {
   const suggestions = [];
-  if (!text.includes('JavaScript')) suggestions.push('Consider adding JavaScript experience.');
-  if (!text.includes('projects')) suggestions.push('Include completed projects.');
+  const lowerText = text.toLowerCase();
+
+  if (!lowerText.includes('javascript')) suggestions.push('Consider adding JavaScript experience.');
+  if (!lowerText.includes('project')) suggestions.push('Include completed projects or achievements.');
+  if (!lowerText.includes('team')) suggestions.push('Mention teamwork or collaboration skills.');
+
   return suggestions;
 }
