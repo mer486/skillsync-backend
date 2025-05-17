@@ -1,4 +1,5 @@
 // services/huggingfaceService.js
+
 const axios = require('axios');
 
 exports.analyzeResumeText = async (text) => {
@@ -8,26 +9,26 @@ exports.analyzeResumeText = async (text) => {
     {
       headers: {
         Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-        'Content-Type': 'application/json'
       },
     }
   );
 
-  const entities = Array.isArray(response.data) ? response.data : [];
+  const entities = response.data;
 
-  return {
-    entities,
-    suggestions: generateSuggestions(text),
-  };
-};
+  const skills = [];
+  const organizations = [];
+  const jobTitles = [];
 
-function generateSuggestions(text) {
+  for (const e of entities) {
+    if (e.entity_group === 'ORG') organizations.push(e.word);
+    else if (e.entity_group === 'TITLE' || e.entity_group === 'JOB') jobTitles.push(e.word);
+    else if (e.entity_group === 'MISC' || e.entity_group === 'SKILL') skills.push(e.word);
+  }
+
   const suggestions = [];
-  const lowerText = text.toLowerCase();
+  if (!text.toLowerCase().includes('project')) suggestions.push('Consider listing your projects.');
+  if (!text.toLowerCase().includes('leadership')) suggestions.push('Add any leadership experience.');
+  if (skills.length < 3) suggestions.push('Add more skills relevant to your target role.');
 
-  if (!lowerText.includes('javascript')) suggestions.push('Consider adding JavaScript experience.');
-  if (!lowerText.includes('project')) suggestions.push('Include completed projects or achievements.');
-  if (!lowerText.includes('team')) suggestions.push('Mention teamwork or collaboration skills.');
-
-  return suggestions;
-}
+  return { skills, organizations, jobTitles, suggestions };
+};

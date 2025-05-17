@@ -9,7 +9,12 @@ const userSchema = new Schema({
   subscription: { type: String, enum: ['free', 'premium'], default: 'free' },
   observer: [{ type: Schema.Types.ObjectId, ref: 'Observer' }],
   career: { type: String },
-  resumeKeywords: [{ type: String }],
+  lastResumeAnalysis: {
+  skills: [String],
+  organizations: [String],
+  jobTitles: [String],
+  suggestions: [String],
+},
 
 
 }, {

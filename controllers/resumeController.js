@@ -1,33 +1,12 @@
+// controllers/resumeController.js
+
 const fs = require('fs');
-const path = require('path');
 const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
 const User = require('../models/User');
 const { analyzeResumeText } = require('../services/huggingfaceService');
-const NotificationService = require('../observers/NotificationService');
-const EmailNotifier = require('../observers/EmailNotifier');
 
-// Utility to extract structured keywords from Hugging Face response
-const extractKeywords = (entities = []) => {
-  const skills = [];
-  const organizations = [];
-  const jobTitles = [];
-
-  for (const item of entities) {
-    const type = item.entity_group?.toUpperCase();
-    if (type === 'ORG') {
-      organizations.push(item.word);
-    } else if (type === 'JOB' || type === 'TITLE') {
-      jobTitles.push(item.word);
-    } else if (type === 'MISC' || type === 'SKILL') {
-      skills.push(item.word);
-    }
-  }
-
-  return { skills, organizations, jobTitles };
-};
-
-// POST /api/resume/upload
+// ✅ Upload and Analyze Resume
 exports.uploadAndAnalyze = async (req, res) => {
   try {
     const file = req.file;
@@ -38,54 +17,36 @@ exports.uploadAndAnalyze = async (req, res) => {
       const dataBuffer = fs.readFileSync(file.path);
       const parsed = await pdfParse(dataBuffer);
       text = parsed.text;
-    } else if (
-      file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    ) {
+    } else if (file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
       const result = await mammoth.extractRawText({ path: file.path });
       text = result.value;
     } else {
       return res.status(400).json({ message: 'Unsupported file format' });
     }
 
-    const { entities, suggestions } = await analyzeResumeText(text);
-    const { skills, organizations, jobTitles } = extractKeywords(entities);
+    const { skills, organizations, jobTitles, suggestions } = await analyzeResumeText(text);
 
     const updateData = {
-      resumeKeywords: skills,
       lastResumeAnalysis: {
         skills,
         organizations,
         jobTitles,
-        suggestions,
-      },
+        suggestions
+      }
     };
 
-    await User.findByIdAndUpdate(req.user.id, {
-  resumeKeywords: skills,
-  lastResumeAnalysis: {
-    skills,
-    organizations,
-    jobTitles,
-    suggestions
-  }
-});
-
-
-    const notifier = new NotificationService();
-    notifier.attach(new EmailNotifier());
-    notifier.notify(`Resume uploaded by ${req.user.email} was analyzed.`);
+    await User.findByIdAndUpdate(req.user.id, updateData, { new: true });
 
     res.json({
       message: 'Resume analyzed successfully',
-      extracted: { skills, organizations, jobTitles },
-      suggestions,
+      extracted: updateData.lastResumeAnalysis
     });
   } catch (error) {
     res.status(500).json({ message: 'Resume analysis failed', error: error.message });
   }
 };
 
-// GET /api/resume/analysis
+// ✅ Get Last Analysis for Logged In User
 exports.getLastAnalysis = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('lastResumeAnalysis');
