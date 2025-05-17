@@ -60,7 +60,16 @@ exports.uploadAndAnalyze = async (req, res) => {
       },
     };
 
-    await User.findByIdAndUpdate(req.user.id, updateData);
+    await User.findByIdAndUpdate(req.user.id, {
+  resumeKeywords: skills,
+  lastResumeAnalysis: {
+    skills,
+    organizations,
+    jobTitles,
+    suggestions
+  }
+});
+
 
     const notifier = new NotificationService();
     notifier.attach(new EmailNotifier());
