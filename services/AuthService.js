@@ -15,7 +15,7 @@ class AuthService {
   if (existing) throw new Error('User already exists');
 
   const hashed = await bcrypt.hash(password, 10);
-  const user = new User({ name, email, password: hashed, role }); // no subscription here
+  const user = new User({ name, email, password: hashed,  role: role.toLowerCase(),}); // no subscription here
   await user.save();
   return user;
 }
