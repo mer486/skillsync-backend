@@ -1,5 +1,3 @@
-// services/huggingfaceService.js
-
 const axios = require('axios');
 
 exports.analyzeResumeText = async (text) => {
@@ -20,15 +18,21 @@ exports.analyzeResumeText = async (text) => {
   const jobTitles = [];
 
   for (const e of entities) {
-    if (e.entity_group === 'ORG') organizations.push(e.word);
-    else if (e.entity_group === 'TITLE' || e.entity_group === 'JOB') jobTitles.push(e.word);
-    else if (e.entity_group === 'MISC' || e.entity_group === 'SKILL') skills.push(e.word);
+    const word = e.word?.replace('##', '')?.trim();
+
+    if (e.entity_group === 'ORG' && word) {
+      organizations.push(word);
+    } else if (e.entity_group === 'MISC' && word) {
+      skills.push(word); // Treat MISC as skill
+    } else if (e.entity_group === 'PER' && word) {
+      jobTitles.push(word); // Not exact, but fallback
+    }
   }
 
   const suggestions = [];
-  if (!text.toLowerCase().includes('project')) suggestions.push('Consider listing your projects.');
-  if (!text.toLowerCase().includes('leadership')) suggestions.push('Add any leadership experience.');
-  if (skills.length < 3) suggestions.push('Add more skills relevant to your target role.');
+  if (!text.toLowerCase().includes('project')) suggestions.push('Add project experience.');
+  if (!text.toLowerCase().includes('leadership')) suggestions.push('Include leadership roles.');
+  if (skills.length < 3) suggestions.push('Add more technical or soft skills.');
 
   return { skills, organizations, jobTitles, suggestions };
 };
