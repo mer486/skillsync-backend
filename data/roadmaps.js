@@ -1,7 +1,7 @@
 // data/roadmaps.js
 
 module.exports = {
-  "Frontend Developer": {
+  "frontend developer": {
     steps: [
       "Learn HTML, CSS, JavaScript",
       "Master React or Vue",
@@ -12,7 +12,7 @@ module.exports = {
     skills: ["html", "css", "javascript", "react", "vue", "git"]
   },
 
-  "Backend Developer": {
+  "backend developer": {
     steps: [
       "Learn Node.js and Express",
       "Understand REST APIs",
@@ -23,7 +23,7 @@ module.exports = {
     skills: ["node.js", "express", "mongodb", "sql", "api", "auth"]
   },
 
-  "Full Stack Developer": {
+  "full stack developer": {
     steps: [
       "Master both frontend & backend fundamentals",
       "Build full-stack applications",
@@ -34,7 +34,7 @@ module.exports = {
     skills: ["html", "css", "javascript", "node.js", "react", "mongodb", "git", "docker"]
   },
 
-  "Data Analyst": {
+  "data analyst": {
     steps: [
       "Learn Python or R",
       "Master SQL and Excel",
@@ -45,7 +45,7 @@ module.exports = {
     skills: ["python", "r", "sql", "excel", "tableau", "powerbi"]
   },
 
-  "BI Analyst": {
+  "bi analyst": {
     steps: [
       "Learn BI tools (Power BI, Tableau)",
       "Master SQL and Excel",
@@ -56,7 +56,7 @@ module.exports = {
     skills: ["sql", "excel", "powerbi", "tableau", "data modeling"]
   },
 
-  "AI/ML Engineer": {
+  "ai/ml engineer": {
     steps: [
       "Learn Python & ML basics",
       "Study statistics and math",
@@ -67,7 +67,7 @@ module.exports = {
     skills: ["python", "ml", "tensorflow", "scikit-learn", "statistics"]
   },
 
-  "Data Scientist": {
+  "data scientist": {
     steps: [
       "Master data wrangling & exploration",
       "Work with Python and Pandas",
@@ -78,7 +78,7 @@ module.exports = {
     skills: ["python", "pandas", "numpy", "scikit-learn", "ml", "data visualization"]
   },
 
-  "Mobile App Developer": {
+  "mobile app developer": {
     steps: [
       "Learn mobile app development (Flutter or native)",
       "Understand UI/UX for mobile",
@@ -89,7 +89,7 @@ module.exports = {
     skills: ["flutter", "dart", "firebase", "ui/ux", "app publishing"]
   },
 
-  "Flutter Developer": {
+  "flutter developer": {
     steps: [
       "Master Dart programming",
       "Build layouts in Flutter",
@@ -100,7 +100,7 @@ module.exports = {
     skills: ["dart", "flutter", "firebase", "ui", "mobile development"]
   },
 
-  "UI/UX Designer": {
+  "ui/ux designer": {
     steps: [
       "Learn design principles & color theory",
       "Use Figma/Adobe XD",
@@ -111,7 +111,7 @@ module.exports = {
     skills: ["figma", "adobe xd", "design", "prototyping", "wireframing"]
   },
 
-  "Product Designer": {
+  "product designer": {
     steps: [
       "Understand product thinking",
       "Study user flows & journey mapping",
@@ -122,7 +122,7 @@ module.exports = {
     skills: ["figma", "ux", "user research", "usability", "collaboration"]
   },
 
-  "DevOps Engineer": {
+  "devOps engineer": {
     steps: [
       "Learn CI/CD and Docker",
       "Understand Linux & networking",
@@ -133,7 +133,7 @@ module.exports = {
     skills: ["devops", "docker", "linux", "ci/cd", "cloud", "aws"]
   },
 
-  "Cloud Architect": {
+  "cloud architect": {
     steps: [
       "Learn AWS/GCP architecture",
       "Design scalable cloud systems",
@@ -144,7 +144,7 @@ module.exports = {
     skills: ["aws", "gcp", "architecture", "cloud", "security"]
   },
 
-  "Cybersecurity Analyst": {
+  "cybersecurity analyst": {
     steps: [
       "Understand cybersecurity fundamentals",
       "Learn about threats & vulnerabilities",
@@ -155,7 +155,7 @@ module.exports = {
     skills: ["security", "networking", "threat analysis", "wireshark", "hacking"]
   },
 
-  "Security Engineer": {
+  "security engineer": {
     steps: [
       "Build secure systems",
       "Implement firewalls and encryption",

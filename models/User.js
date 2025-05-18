@@ -8,7 +8,7 @@ const userSchema = new Schema({
   role: { type: String, enum: ['student', 'mentor', 'admin'], required: true },
   subscription: { type: String, enum: ['free', 'premium'], default: 'free' },
   observer: [{ type: Schema.Types.ObjectId, ref: 'Observer' }],
-  career: { type: String },
+  career: { type: String, default: null },
   lastResumeAnalysis: {
   skills: [String],
   organizations: [String],
