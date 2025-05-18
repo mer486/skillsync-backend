@@ -161,5 +161,26 @@ exports.updateRoadmap = async (req, res) => {
   res.json({ message: 'Roadmap updated', updatedRoadmap: newSteps });
 };
 
+const { suggestCareerPath } = require('../services/careerSuggestionService');
+
+exports.suggestCareers = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const latestAssessment = await Assessment.findOne({ user: userId })
+      .sort({ createdAt: -1 });
+
+    if (!latestAssessment) {
+      return res.status(404).json({ message: 'No assessment data found' });
+    }
+
+    const suggestions = suggestCareerPath(latestAssessment.answers);
+
+    res.json({ suggestions });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to suggest careers', error: error.message });
+  }
+};
+
 
 };
