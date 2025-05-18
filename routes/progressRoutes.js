@@ -8,4 +8,9 @@ router.put('/', auth, progressController.updateProgress);
 
 
 
+// POST /api/progress - Save step progress
+router.post('/', auth, progressController.updateProgress);
+
+
+
 module.exports = router;

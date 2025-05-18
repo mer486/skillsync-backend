@@ -2,6 +2,11 @@ const http = require('http');
 const { Server } = require('socket.io');
 const app = require('./app');
 
+const userRoutes = require('./routes/userRoutes');
+app.use('/api/user', userRoutes);
+
+
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {

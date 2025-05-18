@@ -1,19 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const { registerUser } = require('../controllers/userController');
-
-router.post('/register', registerUser);
 const { auth } = require('../middleware/authMiddleware');
-const userController = require('../controllers/userController');
-router.post('/select-career', auth, userController.selectCareer);
+const User = require('../models/User');
 
-router.put('/career', auth, userController.setCareer); // ✅ Add this
+// ✅ POST /api/user/select-career
+router.post('/select-career', auth, async (req, res) => {
+  const { career } = req.body;
 
+  if (!career) {
+    return res.status(400).json({ message: 'Career is required' });
+  }
 
+  try {
+    await User.findByIdAndUpdate(req.user.id, { career });
+    res.json({ message: 'Career saved successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to save career', error: err.message });
+  }
+});
 
 module.exports = router;
-
-
-
-
-
