@@ -1,6 +1,5 @@
 const Assessment = require('../models/Assessment');  // Ensure this import is added
 
-// Function to submit an assessment
 exports.submitAssessment = async (req, res) => {
   try {
     const { answers } = req.body;
@@ -10,8 +9,7 @@ exports.submitAssessment = async (req, res) => {
       return res.status(400).json({ message: 'Answers are required' });
     }
 
-    // New structured scoring logic
-    const totalScore = answers.reduce((sum, item) => sum + item.score, 0);
+    const totalScore = answers.reduce((sum, item) => sum + (item.score || 0), 0);
 
     const assessment = new Assessment({
       user: userId,
@@ -27,7 +25,10 @@ exports.submitAssessment = async (req, res) => {
       assessment
     });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to submit assessment', error: error.message });
+    res.status(500).json({
+      message: 'Failed to submit assessment',
+      error: error.message
+    });
   }
 };
 
