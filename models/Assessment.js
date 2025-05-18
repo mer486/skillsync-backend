@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const answerSchema = new Schema({
   question: { type: String, required: true },
-  category: { type: String, enum: ['technical', 'business', 'personal'], required: true },
+  category: { type: String, required: true }, // ✅ removed enum constraint
   answer: { type: String, required: true },
   score: { type: Number, required: true }
 });
