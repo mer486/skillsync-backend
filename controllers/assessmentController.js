@@ -81,23 +81,24 @@ exports.suggestCareers = async (req, res) => {
   };
 
   for (const answer of answers) {
-    const q = answer.question.toLowerCase();
-    const score = answer.score;
+  const score = answer.score;
+  const category = answer.category.toLowerCase();
 
-    if (q.includes("design") || q.includes("interface")) {
-      careerScores["ui/ux designer"] += score;
-    } else if (q.includes("data")) {
-      careerScores["data analyst"] += score;
-    } else if (q.includes("algorithm") || q.includes("logic")) {
-      careerScores["backend developer"] += score;
-    } else if (q.includes("web") || q.includes("html")) {
-      careerScores["frontend developer"] += score;
-    } else if (q.includes("mobile") || q.includes("flutter")) {
-      careerScores["mobile app developer"] += score;
-    } else if (q.includes("ai") || q.includes("machine")) {
-      careerScores["ai/ml engineer"] += score;
-    }
+  if (category === "uiux" || category === "design") {
+    careerScores["ui/ux designer"] += score;
+  } else if (category === "data") {
+    careerScores["data analyst"] += score;
+  } else if (category === "backend" || category === "programming") {
+    careerScores["backend developer"] += score;
+  } else if (category === "frontend") {
+    careerScores["frontend developer"] += score;
+  } else if (category === "mobile") {
+    careerScores["mobile app developer"] += score;
+  } else if (category === "ai") {
+    careerScores["ai/ml engineer"] += score;
   }
+}
+
 
   const sorted = Object.entries(careerScores)
     .filter(([career, score]) => score > 0)
