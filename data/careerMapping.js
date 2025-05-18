@@ -1,11 +1,11 @@
 // data/careerMapping.js
 
 module.exports = {
-  "web development": ["Frontend Developer", "Full Stack Developer"],
-  "machine learning": ["ML Engineer", "Data Scientist"],
+  "web development": ["Frontend Developer", "Backend Developer", "Full Stack Developer"],
   "data analysis": ["Data Analyst", "BI Analyst"],
-  "project management": ["Project Manager"],
-  "cybersecurity": ["Security Analyst"],
-  "mobile apps": ["Flutter Developer", "Mobile Developer"],
-  "cloud": ["DevOps Engineer", "Cloud Architect"]
+  "machine learning": ["AI/ML Engineer", "Data Scientist"],
+  "mobile apps": ["Mobile App Developer", "Flutter Developer"],
+  "design": ["UI/UX Designer", "Product Designer"],
+  "cloud": ["DevOps Engineer", "Cloud Architect"],
+  "security": ["Cybersecurity Analyst", "Security Engineer"]
 };
