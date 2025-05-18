@@ -40,6 +40,9 @@ app.use('/api/user', require('./routes/userRoutes'));
 app.use('/api/progress', require('./routes/progressRoutes'));
 
 
+// In server.js or app.js
+const roadmapRoutes = require('./routes/roadmapRoutes');
+app.use('/api/roadmap', roadmapRoutes);
 
 
 mongoose.connect(process.env.MONGO_URI, {
