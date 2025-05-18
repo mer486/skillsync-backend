@@ -23,6 +23,7 @@ const careerRoutes = require('./routes/careerRoutes');
 const progressRoutes = require('./routes/progressRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const mentorRoutes = require('./routes/mentorRoutes');
+const roadmapRoutes = require('./routes/roadmapRoutes');
 
 // Use routes
 app.use('/api/chat', chatRoutes);
@@ -38,11 +39,9 @@ app.use('/api/chats', require('./routes/chatRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/user', require('./routes/userRoutes'));
 app.use('/api/progress', require('./routes/progressRoutes'));
-
-
-// In server.js or app.js
-const roadmapRoutes = require('./routes/roadmapRoutes');
 app.use('/api/roadmap', roadmapRoutes);
+
+
 
 
 mongoose.connect(process.env.MONGO_URI, {
