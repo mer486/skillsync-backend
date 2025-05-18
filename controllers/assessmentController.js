@@ -58,6 +58,7 @@ exports.getAssessmentHistory = async (req, res) => {
 
 const careerMapping = require('../data/roadmaps');
 
+
 exports.suggestCareers = async (req, res) => {
   const userId = req.user.id;
 
@@ -70,7 +71,7 @@ exports.suggestCareers = async (req, res) => {
 
   const answers = lastAssessment.answers;
 
-  // 2. Basic mapping (you can expand later)
+  // 2. Basic scoring map
   let careerScores = {
     "frontend developer": 0,
     "backend developer": 0,
@@ -99,11 +100,31 @@ exports.suggestCareers = async (req, res) => {
     }
   }
 
-  const sorted = Object.entries(careerScores).sort((a, b) => b[1] - a[1]);
-  const topCareer = sorted[0][0];
+  // 3. Sort by highest score
+  const sorted = Object.entries(careerScores)
+    .filter(([career, score]) => score > 0)
+    .sort((a, b) => b[1] - a[1]);
+
+  if (sorted.length === 0) {
+    return res.status(200).json({ message: 'No matching careers found', careerSuggestions: [] });
+  }
+
+  const topSuggestions = sorted.slice(0, 3); // return top 3
+  const careerSuggestions = topSuggestions.map(([careerName, score]) => {
+    const skills = (careerMapping[careerName]?.skills || []).map(skill => ({
+      skillName: skill,
+      proficiency: 0.0,
+    }));
+
+    return {
+      careerName,
+      score,
+      skills,
+    };
+  });
 
   res.json({
-    suggestedCareer: topCareer,
-    roadmap: careerMapping[topCareer]
+    message: 'Career suggestions generated',
+    careerSuggestions
   });
 };
