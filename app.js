@@ -50,6 +50,13 @@ mongoose.connect(process.env.MONGO_URI, {
   process.exit(1); // Exit if connection fails
 });
 
+// Root route to test server is alive
+app.get('/', (req, res) => {
+  res.send('SkillSync Backend API is running');
+});
+
+
+
 
 
 // Export app
