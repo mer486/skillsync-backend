@@ -31,7 +31,7 @@ exports.suggestCareers = async (req, res) => {
         assessmentSkills,
         resumeSkills
       },
-      suggestedCareers: Array.from(matchedCareers)
+      careerSuggestions: Array.from(matchedCareers)
     });
 
   } catch (error) {

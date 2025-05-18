@@ -58,11 +58,9 @@ exports.getAssessmentHistory = async (req, res) => {
 
 const careerMapping = require('../data/roadmaps');
 
-
 exports.suggestCareers = async (req, res) => {
   const userId = req.user.id;
 
-  // 1. Fetch last submitted assessment
   const lastAssessment = await Assessment.findOne({ user: userId }).sort({ createdAt: -1 });
 
   if (!lastAssessment) {
@@ -71,7 +69,6 @@ exports.suggestCareers = async (req, res) => {
 
   const answers = lastAssessment.answers;
 
-  // 2. Basic scoring map
   let careerScores = {
     "frontend developer": 0,
     "backend developer": 0,
@@ -100,7 +97,6 @@ exports.suggestCareers = async (req, res) => {
     }
   }
 
-  // 3. Sort by highest score
   const sorted = Object.entries(careerScores)
     .filter(([career, score]) => score > 0)
     .sort((a, b) => b[1] - a[1]);
@@ -110,6 +106,7 @@ exports.suggestCareers = async (req, res) => {
   }
 
   const topSuggestions = sorted.slice(0, 3); // return top 3
+
   const careerSuggestions = topSuggestions.map(([careerName, score]) => {
     const skills = (careerMapping[careerName]?.skills || []).map(skill => ({
       skillName: skill,
@@ -123,8 +120,10 @@ exports.suggestCareers = async (req, res) => {
     };
   });
 
+  // ✅ This is the final version you should paste now:
   res.json({
     message: 'Career suggestions generated',
-    careerSuggestions
+    careerSuggestions,
   });
 };
+
