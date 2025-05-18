@@ -68,6 +68,8 @@ exports.suggestCareers = async (req, res) => {
   }
 
   const answers = lastAssessment.answers;
+  console.log("✅ Last assessment answers:", answers); // 👈 Add this line
+
 
   let careerScores = {
     "frontend developer": 0,
