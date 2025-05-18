@@ -24,3 +24,32 @@ exports.registerUser = async (req, res) => {
     res.status(500).json({ message: 'Error registering user', error: err.message });
   }
 };
+
+
+exports.setCareer = async (req, res) => {
+  const { career } = req.body;
+
+  if (!career) {
+    return res.status(400).json({ message: 'Career is required' });
+  }
+
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { career },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: 'Career set successfully',
+      user: {
+        id: user._id,
+        email: user.email,
+        career: user.career,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to set career', error: error.message });
+  }
+};
+

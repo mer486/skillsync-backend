@@ -2,16 +2,23 @@ const Progress = require('../models/Progress');
 const roadmaps = require('../data/roadmaps');
 const User = require('../models/User');
 
-// ✅ Update progress (merge new steps with existing ones)
+// ✅ Update user roadmap progress (merging new steps with existing ones)
 exports.updateProgress = async (req, res) => {
   const userId = req.user.id;
   const { completedSteps } = req.body;
 
   try {
+    const user = await User.findById(userId);
+    const career = user?.career;
+
+    if (!career) {
+      return res.status(400).json({ message: 'User has not selected a career yet' });
+    }
+
     let progress = await Progress.findOne({ user: userId });
 
     if (!progress) {
-      progress = new Progress({ user: userId, completedSteps });
+      progress = new Progress({ user: userId, roadmap: career, completedSteps });
     } else {
       const allSteps = new Set([...progress.completedSteps, ...completedSteps]);
       progress.completedSteps = Array.from(allSteps);
@@ -25,30 +32,38 @@ exports.updateProgress = async (req, res) => {
   }
 };
 
-// ✅ Get current progress & visual status
+// ✅ Get progress and roadmap visual status
 exports.getProgress = async (req, res) => {
   const userId = req.user.id;
 
   try {
     const user = await User.findById(userId);
-    if (!user?.career) {
+    const career = user?.career;
+
+    if (!career) {
       return res.status(400).json({ message: 'User has not selected a career yet' });
     }
 
-    const roadmap = roadmaps[user.career];
+    const roadmapData = roadmaps[career.toLowerCase()];
+    if (!roadmapData || !roadmapData.steps) {
+      return res.status(404).json({ message: `No roadmap found for career: ${career}` });
+    }
+
+    const roadmapSteps = roadmapData.steps;
     const progress = await Progress.findOne({ user: userId });
     const completed = progress?.completedSteps || [];
 
-    const status = roadmap.map(step => ({
+    const status = roadmapSteps.map((step, index) => ({
+      index,
       step,
-      completed: completed.includes(step)
+      completed: completed.includes(index)
     }));
 
     res.json({
-      career: user.career,
-      totalSteps: roadmap.length,
+      career,
+      totalSteps: roadmapSteps.length,
       completedSteps: completed.length,
-      progressPercentage: Math.round((completed.length / roadmap.length) * 100),
+      progressPercentage: Math.round((completed.length / roadmapSteps.length) * 100),
       status
     });
   } catch (error) {

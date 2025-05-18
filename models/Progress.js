@@ -3,7 +3,8 @@ const { Schema } = mongoose;
 
 const progressSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  completedSteps: [{ type: String }], // Step names
+  roadmap: { type: String, required: true }, // e.g., "frontend developer"
+  completedSteps: [Number], // step indexes (0-based)
   updatedAt: { type: Date, default: Date.now }
 });
 
