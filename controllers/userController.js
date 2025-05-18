@@ -53,3 +53,21 @@ exports.setCareer = async (req, res) => {
   }
 };
 
+
+// POST /api/user/select-career
+exports.selectCareer = async (req, res) => {
+  const userId = req.user.id;
+  const { career } = req.body;
+
+  if (!career) {
+    return res.status(400).json({ message: 'Career is required' });
+  }
+
+  try {
+    await User.findByIdAndUpdate(userId, { career });
+    res.json({ message: 'Career selected successfully', career });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to save career', error: error.message });
+  }
+};
+
