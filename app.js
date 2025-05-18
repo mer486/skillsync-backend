@@ -36,6 +36,8 @@ app.use('/api/progress', progressRoutes);
 app.use('/api/mentor', mentorRoutes);
 app.use('/api/chats', require('./routes/chatRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/user', require('./routes/userRoutes'));
+app.use('/api/progress', require('./routes/progressRoutes'));
 
 
 

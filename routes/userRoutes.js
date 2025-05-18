@@ -9,6 +9,8 @@ router.post('/select-career', auth, userController.selectCareer);
 
 router.put('/career', auth, userController.setCareer); // ✅ Add this
 
+
+
 module.exports = router;
 
 
