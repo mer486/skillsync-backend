@@ -15,5 +15,7 @@ router.get('/questions', auth, (req, res) => {
 // ✅ Routes
 router.post('/submit', auth, assessmentController.submitAssessment);
 router.get('/history', auth, assessmentController.getAssessmentHistory);
+// routes/assessmentRoutes.js
+router.get('/suggest', auth, assessmentController.suggestCareers);
 
 module.exports = router;

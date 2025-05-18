@@ -52,3 +52,57 @@ exports.getAssessmentHistory = async (req, res) => {
     res.status(500).json({ message: 'Failed to retrieve assessment history', error: error.message });
   }
 };
+
+// controllers/assessmentController.js
+
+const careerMapping = require('../data/roadmaps');
+
+exports.suggestCareers = async (req, res) => {
+  const userId = req.user.id;
+
+  // 1. Fetch last submitted assessment
+  const lastAssessment = await Assessment.findOne({ user: userId }).sort({ createdAt: -1 });
+
+  if (!lastAssessment) {
+    return res.status(404).json({ message: 'No assessments found to suggest careers' });
+  }
+
+  const answers = lastAssessment.answers;
+
+  // 2. Basic mapping (you can expand later)
+  let careerScores = {
+    "frontend developer": 0,
+    "backend developer": 0,
+    "data analyst": 0,
+    "ai/ml engineer": 0,
+    "mobile app developer": 0,
+    "ui/ux designer": 0,
+  };
+
+  for (const answer of answers) {
+    const q = answer.question.toLowerCase();
+    const score = answer.score;
+
+    if (q.includes("design") || q.includes("interface")) {
+      careerScores["ui/ux designer"] += score;
+    } else if (q.includes("data")) {
+      careerScores["data analyst"] += score;
+    } else if (q.includes("algorithm") || q.includes("logic")) {
+      careerScores["backend developer"] += score;
+    } else if (q.includes("web") || q.includes("html")) {
+      careerScores["frontend developer"] += score;
+    } else if (q.includes("mobile") || q.includes("flutter")) {
+      careerScores["mobile app developer"] += score;
+    } else if (q.includes("ai") || q.includes("machine")) {
+      careerScores["ai/ml engineer"] += score;
+    }
+  }
+
+  const sorted = Object.entries(careerScores).sort((a, b) => b[1] - a[1]);
+  const topCareer = sorted[0][0];
+
+  res.json({
+    suggestedCareer: topCareer,
+    roadmap: careerMapping[topCareer]
+  });
+};
