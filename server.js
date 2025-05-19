@@ -6,6 +6,7 @@ const userRoutes = require('./routes/userRoutes');
 app.use('/api/user', userRoutes);
 
 app.use('/api/user', require('./routes/userRoutes'));
+app.use('/api/courses', require('./routes/courseRoutes'));
 
 
 const server = http.createServer(app);
