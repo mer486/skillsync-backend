@@ -7,6 +7,7 @@ app.use('/api/user', userRoutes);
 
 app.use('/api/user', require('./routes/userRoutes'));
 app.use('/api/courses', require('./routes/courseRoutes'));
+app.use('/api/progress', require('./routes/progressRoutes'));
 
 
 const server = http.createServer(app);

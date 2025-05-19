@@ -7,6 +7,13 @@ router.get('/', auth, progressController.getProgress);
 router.put('/', auth, progressController.updateProgress);
 
 
+const controller = require('../controllers/progressController');
+
+router.get('/', auth, controller.getProgress);
+router.put('/', auth, controller.updateProgress);
+
+module.exports = router;
+
 
 // POST /api/progress - Save step progress
 router.post('/', auth, progressController.updateProgress);
