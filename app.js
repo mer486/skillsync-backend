@@ -40,6 +40,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/user', require('./routes/userRoutes'));
 app.use('/api/progress', require('./routes/progressRoutes'));
 app.use('/api/roadmap', roadmapRoutes);
+app.use('/api/courses', require('./routes/courseRoutes'));
 
 app.use('/api/user', userRoutes);
 

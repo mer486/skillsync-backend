@@ -3,6 +3,13 @@ const router = express.Router();
 const courses = require('../data/careerCourses');
 const User = require('../models/User');
 const { auth } = require('../middleware/authMiddleware');
+const { getCoursesForCareer } = require('../controllers/courseController');
+
+router.get('/', auth, getCoursesForCareer);
+
+module.exports = router;
+
+
 
 // GET /api/courses
 router.get('/', auth, async (req, res) => {
